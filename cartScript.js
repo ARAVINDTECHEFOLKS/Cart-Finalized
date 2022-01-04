@@ -441,13 +441,14 @@ function displayCart() {
     }
     onRemove();
 
-    // console.log(clearButton);
+   
     function clearCart() {
       document.getElementsByClassName("products")[0].innerText =
         "no items in your cart";
       document.getElementsByClassName("total")[0].innerText = " ";
       document.getElementsByClassName("showingPrice")[0].innerText = " ";
       console.log("the end");
+      clearButton.remove();
       localStorage.clear();
     }
 

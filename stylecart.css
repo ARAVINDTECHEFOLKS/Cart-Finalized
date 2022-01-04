@@ -1,0 +1,145 @@
+.show-cart li {
+  display: flex;
+}
+.card {
+  margin-bottom: 20px;
+}
+.card-img-top {
+  width: 200px;
+  height: 200px;
+  align-self: center;
+  object-fit: contain;
+}
+.price_color {
+  color: brown;
+}
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #04aa6d;
+  color: white;
+}
+
+.topnav-right {
+  float: right;
+}
+
+.nav-belt .row {
+  background-color: black;
+  color: white;
+}
+
+.anchor {
+  text-decoration: none;
+  color: white;
+  padding: 2px;
+}
+.anchor:hover {
+  color: white;
+  border-radius: 5px;
+  border: 1px wheat solid;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  list-style: none;
+  font-weight: bold;
+  border: 0px;
+  margin: 0px;
+}
+.nav-fill {
+  display: flex;
+  align-items: center;
+}
+.nav-right {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  font-weight: bold;
+  border: 0px;
+  margin: 0px;
+}
+.cart {
+  color: white;
+  text-decoration: none;
+}
+.cart:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.nav-main .row {
+  background-color: #232f3e;
+  padding-top: 10px;
+  display: flex;
+  align-content: center;
+}
+.nav-mainleft {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  list-style: none;
+}
+
+.nav-logo {
+  font-size: 20px;
+  display: flex;
+  text-decoration: none;
+  color: white;
+}
+.nav-logo:hover {
+  position: relative;
+  color: white;
+  border-radius: 5px;
+  border: 1px wheat solid;
+}
+.table_margin {
+  margin: 35px;
+  padding-bottom: 20px;
+}
+.image_col {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  object-fit: contain;
+}
+.btn-clr {
+  background-color: rgba(169, 169, 169, 0.199);
+  border-radius: 10px;
+}
+.button {
+  font-size: small;
+  font-weight: 500;
+  padding: 0 10px;
+  color: hsl(0, 4%, 41%);
+}
+.button:hover {
+  color: hsl(0, 4%, 41%);
+}
+.total {
+  text-align: right;
+}

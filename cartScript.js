@@ -58,28 +58,28 @@ for (let i = 0; i < carts.length; i++) {
     { once: true }
   );
 }
+//this function will collect the count of cart before you run code
 function onLoadCartNumbers() {
   let productNumbers = localStorage.getItem("cartNumbers");
   if (productNumbers) {
     document.querySelector(".cart span").textContent = productNumbers;
   }
 }
+// this function will help to add items into localstorage as well as changes cart count
 function cartNumbers(product) {
   let tagItems = localStorage.getItem("productTag");
   tagItems = JSON.parse(tagItems);
-  let productNumbers = localStorage.getItem("cartNumbers");
-  productNumbers = parseInt(productNumbers);
-
-  if (productNumbers) {
+  if (tagItems) {
     let check = product.tag;
     let checkWith = JSON.parse(localStorage.getItem("productTag"));
     let result = checkWith.indexOf(check) > -1;
     if (result === true) {
       alert("this item is already added check in cart");
     } else {
-      localStorage.setItem("cartNumbers", productNumbers + 1);
-      document.querySelector(".cart span").textContent = productNumbers + 1;
       tagItems = [...tagItems, product.tag];
+      localStorage.getItem("cartNumbers");
+      localStorage.setItem("cartNumbers", tagItems.length);
+      document.querySelector(".cart span").textContent = tagItems.length;
       localStorage.setItem("productTag", JSON.stringify(tagItems));
       setItems(product);
       alert(
@@ -90,17 +90,18 @@ function cartNumbers(product) {
     tagItems = [product.tag];
     localStorage.setItem("productTag", JSON.stringify(tagItems));
     localStorage.setItem("cartNumbers", 1);
-    document.querySelector(".cart span").textContent = 1;
+    console.log(tagItems.length);
+    document.querySelector(".cart span").textContent = tagItems.length;
     setItems(product);
     alert(
       "1 of this item is added to cart...if you want increase quantity go to cart page"
     );
   }
 }
+//this function get called in above function which is usefull to set items in local storage
 function setItems(product) {
   let cartItems = localStorage.getItem("productsInCart");
   cartItems = JSON.parse(cartItems);
-
   if (cartItems != null) {
     if (cartItems[product.tag] == undefined) {
       cartItems = {
@@ -117,6 +118,7 @@ function setItems(product) {
   }
   localStorage.setItem("productsInCart", JSON.stringify(cartItems));
 }
+// this function will update totalcost in localstorage
 function totalCost(product) {
   let cartCost = localStorage.getItem("totalCost");
   if (cartCost != null) {
@@ -128,7 +130,7 @@ function totalCost(product) {
     localStorage.setItem("totalCost", totalCostofItem);
   }
 }
-var k = 0;
+//cart page will get updated with this function
 function displayCart() {
   var total = 0;
   let cartItems = localStorage.getItem("productsInCart");
@@ -139,7 +141,6 @@ function displayCart() {
     productsContainer.innerHTML = ``;
     totalPrice.innerHTML += ``;
     var checkSize = 0;
-    countOfItemsInCart = new Array(checkSize);
     var tag = [];
     Object.values(cartItems).map((item) => {
       productsContainer.innerHTML += `
@@ -152,7 +153,7 @@ function displayCart() {
             <div class="table">
                       <button class="dBtn"><</button></i><span id="checkingValue"><a class="value" >${item.inCart}</a></span><button class="iBtn">></button>
                     <a class="remove" href="#">Delete</a> <a> | </a>
-                  <a href="#">see more like this</a>
+                  <a href="index.html">see more like this</a>
                 </div> 
             </div>
             <div class="col">
@@ -161,50 +162,43 @@ function displayCart() {
             </div>`;
       tag[checkSize] = item.tag;
       total += item.inCart * item.price;
-      countOfItemsInCart[checkSize] = item.inCart;
       checkSize++;
     });
     let decreaseNode = document.querySelectorAll(".dBtn");
     let increaseNode = document.querySelectorAll(".iBtn");
-    let valueDNode = document.querySelectorAll(".value");
+    let valueNode = document.querySelectorAll(".value");
     let priceChangeNode = document.querySelectorAll(".price");
     var priceChange = Array.from(priceChangeNode);
     var decrease = Array.from(decreaseNode);
     var increase = Array.from(increaseNode);
-    var valueD = Array.from(valueDNode);
+    var value = Array.from(valueNode);
     var totalOfPriceArray = new Array(decrease.length);
-    var totalInCart = 0; // variable --> total incart value
     var totalCountOfAmount = 0; //total price of items
     var num = new Array(decrease.length);
     console.log(priceChange[0]);
     function checkEntire() {
+      //this function useful to check no.of qty of a product
       num = new Array(decrease.length); // array for item values
       for (let k = 0; k < decrease.length; k++) {
-        num[k] = valueD[k].innerHTML;
+        num[k] = value[k].innerHTML;
         num[k] = parseInt(num[k]);
       }
     }
     checkEntire();
-    function calculateInCart() {
-      totalInCart = 0;
-      for (let i = 0; i < num.length; i++) {
-        totalInCart += num[i];
-      }
-    }
-    calculateInCart();
-
     function checkingTotalAmount() {
+      //this function will help to get the price of each item
       for (let i = 0; i < decrease.length; i++) {
         let elementName = tag[i];
         let checkingForTag = localStorage.getItem("productsInCart");
         checkingForTag = JSON.parse(checkingForTag);
-        let priceOfItem = checkingForTag[elementName].price;
+        let priceOfItem = checkingForTag[elementName].totalPrice;
         priceOfItem = JSON.parse(priceOfItem);
         totalOfPriceArray[i] = priceOfItem;
       }
     }
     checkingTotalAmount();
     function calculate() {
+      //this function will help to return total cost of cart
       totalCountOfAmount = 0;
       for (let i = 0; i < decrease.length; i++) {
         totalCountOfAmount += totalOfPriceArray[i];
@@ -212,6 +206,7 @@ function displayCart() {
     }
     calculate();
     function calculateTotalPrice() {
+      //this function will return totalprice of individual item and update at price div
       for (let j = 0; j < decrease.length; j++) {
         let elementName = tag[j];
         let checkingForTag = localStorage.getItem("productsInCart");
@@ -222,239 +217,136 @@ function displayCart() {
       }
     }
     calculateTotalPrice();
+    function afterQtyChange() {
+      let elementName = tag[index];
+      console.log(index);
+      let checkingForTag = localStorage.getItem("productsInCart");
+      checkingForTag = JSON.parse(checkingForTag);
+      checkingForTag[elementName].inCart = count;
+      let priceOfItem = checkingForTag[elementName].price;
+      priceOfItem = JSON.parse(priceOfItem);
+      let totalOfPrice = count * priceOfItem;
+      totalOfPriceArray[index] = totalOfPrice;
+      calculate();
+      checkingForTag[elementName].totalPrice = totalOfPrice;
+      localStorage.setItem("productsInCart", JSON.stringify(checkingForTag));
+      priceChange[index].innerHTML = checkingForTag[elementName].totalPrice;
+      calculateTotalPrice();
+      document.getElementsByClassName("total")[0].innerHTML =
+        totalCountOfAmount;
+      let checkingFortotalCost = localStorage.getItem("totalCost");
+      checkingFortotalCost = JSON.parse(checkingFortotalCost);
+      checkingFortotalCost = totalCountOfAmount;
+      localStorage.setItem("totalCost", JSON.stringify(checkingFortotalCost));
+    }
+    //this function for incrementing and decrementing qty
+    var index;
+    var count;
     function whenChange() {
       checkEntire();
-      var totalOfPrice;
+      //var totalOfPrice;
       for (let j = 0; j < decrease.length; j++) {
         decrease[j].onclick = function decreaseValue() {
-          let elementName = tag[j];
-          let checkingForTag = localStorage.getItem("productsInCart");
-          checkingForTag = JSON.parse(checkingForTag);
-          let cartCount = checkingForTag[elementName].inCart;
-          if (cartCount > 0) {
-            console.log("decrease" + j);
-            let numD = num[j];
-            numD = numD - 1;
-            valueD[j].innerHTML = numD;
-            num[j] = numD;
-            if (numD < 1) {
-              num[j] = 1;
-              valueD[j].innerHTML = num[j];
-            }
-            let elementName = tag[j];
-            let checkingForTag = localStorage.getItem("productsInCart");
-            checkingForTag = JSON.parse(checkingForTag);
-            checkingForTag[elementName].inCart = num[j];
-            let priceOfItem = checkingForTag[elementName].price;
-            priceOfItem = JSON.parse(priceOfItem);
-            localStorage.setItem(
-              "productsInCart",
-              JSON.stringify(checkingForTag)
-            );
-            totalOfPrice = num[j] * priceOfItem;
-            totalOfPriceArray[j] = totalOfPrice;
-            console.log("this is num[j]", num[j]);
-            calculate();
-            checkingForTag[elementName].totalPrice = totalOfPriceArray[j];
-            localStorage.setItem(
-              "productsInCart",
-              JSON.stringify(checkingForTag)
-            );
-            priceChange[j].innerHTML = checkingForTag[elementName].totalPrice;
-            calculateTotalPrice();
-            document.getElementsByClassName("total")[0].innerHTML =
-              totalCountOfAmount;
-            let checkingFortotalCost = localStorage.getItem("totalCost");
-            checkingFortotalCost = JSON.parse(checkingFortotalCost);
-            checkingFortotalCost = totalCountOfAmount;
-            localStorage.setItem(
-              "totalCost",
-              JSON.stringify(checkingFortotalCost)
-            );
-
-            let checkingForCartNumbers = localStorage.getItem("cartNumbers");
-            checkingForCartNumbers = JSON.parse(checkingForCartNumbers);
-            calculateInCart();
-            checkingForCartNumbers = totalInCart;
-            localStorage.setItem(
-              "cartNumbers",
-              JSON.stringify(checkingForCartNumbers)
-            );
-            document.querySelector(".cart span").textContent = totalInCart;
-          } else {
-            alert("this item has been removed");
+          //used for decreasing qty
+          index = j;
+          console.log("decrease" + j);
+          console.log(index);
+          num[j] = num[j] - 1;
+          count = num[j];
+          value[j].innerHTML = num[j];
+          if (num[j] < 1) {
+            num[j] = 1;
+            value[j].innerHTML = num[j];
           }
+          afterQtyChange();
         };
       }
-
       for (let j = 0; j < increase.length; j++) {
         increase[j].onclick = function increaseValue() {
-          let elementName = tag[j];
-          let checkingForTag = localStorage.getItem("productsInCart");
-          checkingForTag = JSON.parse(checkingForTag);
-          let cartCount = checkingForTag[elementName].inCart;
-          if (cartCount > 0) {
-            console.log("increase" + j);
-            let numI = num[j];
-            numI = numI + 1;
-            valueD[j].innerHTML = numI;
-            num[j] = numI;
-            if (numI < 1) {
-              num[j] = 1;
-              valueD[j].innerHTML = num[j];
-            }
-            let elementName = tag[j];
-            let checkingForTag = localStorage.getItem("productsInCart");
-            checkingForTag = JSON.parse(checkingForTag);
-            checkingForTag[elementName].inCart = num[j];
-            let priceOfItem = checkingForTag[elementName].price;
-            priceOfItem = JSON.parse(priceOfItem);
-            localStorage.setItem(
-              "productsInCart",
-              JSON.stringify(checkingForTag)
-            );
-            totalOfPrice = num[j] * priceOfItem;
-            totalOfPriceArray[j] = totalOfPrice;
-            calculate();
-            checkingForTag[elementName].totalPrice = totalOfPrice;
-            localStorage.setItem(
-              "productsInCart",
-              JSON.stringify(checkingForTag)
-            );
-            priceChange[j].innerHTML = checkingForTag[elementName].totalPrice;
-            calculateTotalPrice();
-            document.getElementsByClassName("total")[0].innerHTML =
-              totalCountOfAmount;
-            let checkingFortotalCost = localStorage.getItem("totalCost");
-            checkingFortotalCost = JSON.parse(checkingFortotalCost);
-            checkingFortotalCost = totalCountOfAmount;
-            localStorage.setItem(
-              "totalCost",
-              JSON.stringify(checkingFortotalCost)
-            );
-            let checkingForCartNumbers = localStorage.getItem("cartNumbers");
-            checkingForCartNumbers = JSON.parse(checkingForCartNumbers);
-            calculateInCart();
-            checkingForCartNumbers = totalInCart;
-            localStorage.setItem(
-              "cartNumbers",
-              JSON.stringify(checkingForCartNumbers)
-            );
-            document.querySelector(".cart span").textContent = totalInCart;
-          } else {
-            alert("this item has been removed");
+          //used for increasing qty
+          index = j;
+          num[j] = num[j] + 1;
+          count = num[j];
+          value[j].innerHTML = num[j];
+          if (num[j] < 1) {
+            num[j] = 1;
+            value[j].innerHTML = num[j];
           }
+          afterQtyChange();
         };
       }
     }
-
     whenChange();
-    let f = 1;
     function onRemove() {
+      // thsi function for delete button
       let removeButtonNode = document.querySelectorAll(".remove");
       let removeButton = Array.from(removeButtonNode);
-
       for (let i = 0; i < decrease.length; i++) {
         removeButton[i].onclick = function removeItem() {
-          for (let j = i; j < i + 1; j++) {
-            var price = document.getElementsByClassName("price")[0].innerText;
-            price = parseInt(price);
-
-            removeButton[i].parentElement.parentElement.parentElement.remove();
-
-            let checkingForCartNumbers = localStorage.getItem("cartNumbers");
-            checkingForCartNumbers = JSON.parse(checkingForCartNumbers);
-            checkingForCartNumbers = checkingForCartNumbers - num[i];
-            localStorage.setItem(
-              "cartNumbers",
-              JSON.stringify(checkingForCartNumbers)
-            );
-            let displayCount = document.querySelector(".cart span").textContent;
-            document.querySelector(".cart span").textContent =
-              displayCount - num[i];
-            let elementName = tag[i];
-            let checkingForTag = JSON.parse(
-              localStorage.getItem("productsInCart")
-            );
-            let priceOfItem = checkingForTag[elementName].price;
-
-            priceOfItem = parseInt(priceOfItem);
-            localStorage.setItem(
-              "productsInCart",
-              JSON.stringify(checkingForTag)
-            );
-            removeButton.splice(i, 1);
-            decrease.splice(i, 1);
-            increase.splice(i, 1);
-            valueD.splice(i, 1);
-            tag.splice(i, 1);
-            priceChange.splice(i, 1);
-            var totalNum =
-              document.getElementsByClassName("total")[0].innerText;
-            totalNum = parseInt(totalNum);
-            document.getElementsByClassName("total")[0].innerHTML =
-              totalNum - num[i] * priceOfItem;
-            let checkingFortotalCost = localStorage.getItem("totalCost");
-            checkingFortotalCost = JSON.parse(checkingFortotalCost);
-            checkingFortotalCost = totalNum - num[i] * priceOfItem;
-            localStorage.setItem(
-              "totalCost",
-              JSON.stringify(checkingFortotalCost)
-            );
-            checkingForTag[elementName].inCart = 0;
-            priceOfItem = parseInt(priceOfItem);
-            localStorage.setItem(
-              "productsInCart",
-              JSON.stringify(checkingForTag)
-            );
-
-            totalOfPriceArray.splice = (i, 1);
-            num.splice = (i, 1);
-            console.log("thsi is F ", f);
-            delete checkingForTag[elementName];
-            localStorage.setItem(
-              "productsInCart",
-              JSON.stringify(checkingForTag)
-            );
-            let productTag = JSON.parse(localStorage.getItem("productTag"));
-            productTag.splice(j, 1);
-            localStorage.setItem("productTag", JSON.stringify(productTag));
-
-            checkEntire();
-            calculateInCart();
-            checkingTotalAmount();
-            calculate();
-
-            whenChange();
-            onRemove();
-
-            let displayCountOfCart =
-              document.querySelector(".cart span").textContent;
-            if (displayCountOfCart <= 0) {
-              clearCart();
-            }
-
-            f++;
+          removeButton[i].parentElement.parentElement.parentElement.remove();
+          let checkingForCartNumbers = JSON.parse(
+            localStorage.getItem("cartNumbers")
+          );
+          checkingForCartNumbers = checkingForCartNumbers - 1;
+          localStorage.setItem(
+            "cartNumbers",
+            JSON.stringify(checkingForCartNumbers)
+          );
+          let elementName = tag[i];
+          let checkingForTag = JSON.parse(
+            localStorage.getItem("productsInCart")
+          );
+          let priceOfItem = checkingForTag[elementName].price;
+          priceOfItem = parseInt(priceOfItem);
+          removeButton.splice(i, 1);
+          decrease.splice(i, 1);
+          increase.splice(i, 1);
+          value.splice(i, 1);
+          tag.splice(i, 1);
+          priceChange.splice(i, 1);
+          var totalNum = document.getElementsByClassName("total")[0].innerText;
+          totalNum = parseInt(totalNum);
+          document.getElementsByClassName("total")[0].innerHTML =
+            totalNum - num[i] * priceOfItem;
+          let checkingFortotalCost = localStorage.getItem("totalCost");
+          checkingFortotalCost = JSON.parse(checkingFortotalCost);
+          checkingFortotalCost = totalNum - num[i] * priceOfItem;
+          localStorage.setItem(
+            "totalCost",
+            JSON.stringify(checkingFortotalCost)
+          );
+          totalOfPriceArray.splice = (i, 1);
+          num.splice = (i, 1);
+          delete checkingForTag[elementName];
+          localStorage.setItem(
+            "productsInCart",
+            JSON.stringify(checkingForTag)
+          );
+          let productTag = JSON.parse(localStorage.getItem("productTag"));
+          productTag.splice(i, 1);
+          document.querySelector(".cart span").textContent = productTag.length;
+          localStorage.setItem("productTag", JSON.stringify(productTag));
+          whenChange();
+          onRemove();
+          let displayCountOfCart =
+            document.querySelector(".cart span").textContent;
+          if (displayCountOfCart <= 0) {
+            clearCart();
           }
         };
       }
     }
     onRemove();
-
-   
+    // this function clearing cart and local storage when there is no item in the cart
     function clearCart() {
       document.getElementsByClassName("products")[0].innerText =
         "no items in your cart";
       document.getElementsByClassName("total")[0].innerText = " ";
       document.getElementsByClassName("showingPrice")[0].innerText = " ";
-      console.log("the end");
       clearButton.remove();
       localStorage.clear();
     }
-
-    Object.values(cartItems).map((item) => {
-      totalPrice.innerHTML = `
- 
+    totalPrice.innerHTML = `
     <table>
     <tr>
     <td><h5 class="showingPrice">TotalPrice: </h5> </td>
@@ -462,23 +354,16 @@ function displayCart() {
     </tr>
     </table>
     <div><button class="clearButton btn btn-primary" >Clear Cart</button></div>`;
-    });
     let clearButton = document.querySelectorAll(".clearButton")[0];
     clearButton.addEventListener("click", () => {
-      localStorage.clear();
-      document.getElementsByClassName("products")[0].innerText =
-        "no items in your cart";
-      document.getElementsByClassName("total")[0].innerText = " ";
-      document.getElementsByClassName("showingPrice")[0].innerText = " ";
+      //this function is for clear cart button
+      clearCart();
       document.querySelector(".cart span").textContent = 0;
-      console.log("the end");
-      clearButton.remove();
     });
   }
 }
 onLoadCartNumbers();
 displayCart();
-
 console.log("last");
 // if (performance.navigation.type === 1) {
 //   localStorage.clear();

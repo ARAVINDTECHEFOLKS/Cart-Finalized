@@ -256,6 +256,7 @@ function displayCart() {
           value[j].innerHTML = num[j];
           if (num[j] < 1) {
             num[j] = 1;
+             count = num[j];
             value[j].innerHTML = num[j];
           }
           afterQtyChange();
@@ -270,6 +271,7 @@ function displayCart() {
           value[j].innerHTML = num[j];
           if (num[j] < 1) {
             num[j] = 1;
+             count = num[j];
             value[j].innerHTML = num[j];
           }
           afterQtyChange();
